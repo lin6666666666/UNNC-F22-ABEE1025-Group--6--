@@ -1,1 +1,155 @@
+import wx
+import sys
 
+# 使用Frame框架
+class MyFrame(wx.Frame):
+    """初始化总视窗"""
+    def __init__(self):
+        # 初始化窗口信息
+        self.frame_data = {
+            'parent': None,
+            'title': '计算器',
+            'pos': (550, 220),
+            'size': (400, 370),
+        }
+        super(MyFrame, self).__init__(**self.frame_data)
+        
+        # 设置画布
+        self.panel = wx.Panel(self)
+        self.SetBackgroundColour('white')
+        
+        # 设置文字
+        self.title = wx.StaticText(self.panel, label='U值计算器')
+        self.title.SetFont(wx.Font(wx.FontInfo(20)))
+        self.formula = wx.StaticText(self.panel, label='U=Q/A△T')
+        self.formula.SetFont(wx.Font(wx.FontInfo(16)))
+        self.Q = wx.StaticText(self.panel, label='Q：')
+        self.A = wx.StaticText(self.panel, label='A：')
+        self.T = wx.StaticText(self.panel, label='△T：')
+        self.U = wx.StaticText(self.panel, label='U：')
+        self.W = wx.StaticText(self.panel, label='W')
+        self.M = wx.StaticText(self.panel, label='m²')
+        self.K = wx.StaticText(self.panel, label='K')
+        self.WMK = wx.StaticText(self.panel, label='W/m²k')
+        
+        # 设置输入框
+        self.box1 = wx.TextCtrl(self.panel, size=(200, 20), style=wx.TE_CENTER)
+        self.box2 = wx.TextCtrl(self.panel, size=(200, 20), style=wx.TE_CENTER)
+        self.box3 = wx.TextCtrl(self.panel, size=(200, 20), style=wx.TE_CENTER)
+        self.box4 = wx.TextCtrl(self.panel, size=(200, 20), style=wx.TE_CENTER)
+        
+        # 设置按钮
+        self.enter = wx.Button(self.panel, label='计算')
+        self.clear = wx.Button(self.panel, label='清除')
+        self.Bind(wx.EVT_CLOSE, self.on_click_window)
+        
+        # 设置布局
+        self.layout()
+        
+        # 设置按钮事件
+        self.enter.Bind(wx.EVT_BUTTON, self.on_click_enter)
+        self.clear.Bind(wx.EVT_BUTTON, self.on_click_clear)
+        
+    
+    """设置控件布局""" 
+    def layout(self):
+        # 控件按设计图布局
+        vsizer1 = wx.BoxSizer(wx.VERTICAL)
+        vsizer1.Add(self.Q, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        vsizer1.Add(self.A, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        vsizer1.Add(self.T, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        vsizer1.Add(self.U, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+
+        vsizer2 = wx.BoxSizer(wx.VERTICAL)
+        vsizer2.Add(self.box1, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        vsizer2.Add(self.box2, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        vsizer2.Add(self.box3, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        vsizer2.Add(self.box4, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+
+        vsizer3 = wx.BoxSizer(wx.VERTICAL)
+        vsizer3.Add(self.W, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        vsizer3.Add(self.M, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        vsizer3.Add(self.K, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        vsizer3.Add(self.WMK, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        
+        hsizer1 = wx.BoxSizer(wx.HORIZONTAL)
+        hsizer1.Add(vsizer1, flag=wx.LEFT | wx.ALIGN_CENTER, border=10)
+        hsizer1.Add(vsizer2, flag=wx.LEFT | wx.ALIGN_CENTER, border=10)
+        hsizer1.Add(vsizer3, flag=wx.LEFT | wx.ALIGN_CENTER, border=10)
+        
+        hsizer2 = wx.BoxSizer(wx.HORIZONTAL)
+        hsizer2.Add(self.enter, flag=wx.RIGHT | wx.ALIGN_CENTER, border=20)
+        hsizer2.Add(self.clear, flag=wx.LEFT | wx.ALIGN_CENTER, border=20)
+        
+        vsizer_m = wx.BoxSizer(wx.VERTICAL)
+        vsizer_m.Add(self.title, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        vsizer_m.Add(self.formula, flag=wx.TOP | wx.ALIGN_CENTER, border=15)
+        vsizer_m.Add(hsizer1, flag=wx.TOP | wx.ALIGN_CENTER, border=10)
+        vsizer_m.Add(hsizer2, flag=wx.TOP | wx.ALIGN_CENTER, border=30)
+        
+        self.panel.SetSizer(vsizer_m)
+    
+    """enter按钮事件"""
+    def on_click_enter(self, event):
+        val_list = []
+        for i in range(1, 5):
+            val_list.append(eval(f'self.box{i}.GetValue()'))  
+            
+        #查询用户是否将计算内容填完整
+        count = 0
+        for val in val_list:
+            if val != '':   # 检测输入的是否为纯数字
+                try:
+                    float(val)
+                except ValueError:
+                    count = 0
+                    break
+            if val != '':   # 检测有几个变量被输入
+                count += 1
+ 
+        # 依据变量个数来执行对应计算或提示
+        if count == 3:  # 当用户填入个数正确时
+            cord = 1
+            for val in val_list:    # 寻找缺失项，然后计算出值
+                if val == '':
+                    break
+                else:
+                    cord += 1
+            if cord == 1:
+                self.box1.SetValue(str(round(int(val_list[1]) * int(val_list[2]) * int(val_list[3]), 2)))
+            elif cord == 2:
+                self.box2.SetValue(str(round(int(val_list[0]) / int(val_list[2]) / int(val_list[3]), 2)))
+            elif cord == 3:
+                self.box3.SetValue(str(round(int(val_list[0]) / int(val_list[1]) * int(val_list[3]), 2)))
+            elif cord == 4:
+                self.box4.SetValue(str(round(int(val_list[0]) / int(val_list[1]) * int(val_list[2]), 2)))
+        elif count == 4:    # 当全部填入时
+            wx.MessageBox('不要填入4个数据，请重新输入！')
+        elif count == 0:
+            wx.MessageBox('请确保填入的是数字！')
+        else:
+            wx.MessageBox('请输入3个数据以进行计算！')        
+    
+    """clear按钮事件"""
+    def on_click_clear(self, event):
+        self.box1.Clear()
+        self.box2.Clear()
+        self.box3.Clear()
+        self.box4.Clear()
+
+    """处理后台清空的问题"""
+    @staticmethod
+    def on_click_window(event):
+        dlg = wx.MessageDialog(None, "真的要退出吗？", "确定", wx.YES_NO | wx.ICON_QUESTION)
+        ret_code = dlg.ShowModal()
+        if ret_code == wx.ID_YES:
+            sys.exit()
+        else:
+            pass
+
+if __name__ == '__main__':
+    # 创建应用程序并打开MyFrame窗口
+    app = wx.App()
+    frame = MyFrame()
+    frame.Show()
+    app.MainLoop()
