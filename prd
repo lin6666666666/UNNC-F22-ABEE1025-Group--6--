@@ -1,0 +1,10 @@
+Our software is called a U-value calculator. We have noticed that the U value is an important reference value for material selection and size measurement 
+in the actual design of building engineering, so we want to design a software to make the calculation faster. The main function of the software is to 
+calculate the U value based on the known heat, temperature difference and area. This software is easy to use. Input relevant parameters and click “计算” 
+to get the U value. Click “清除” to eliminate all numbers in the software.
+To meet the diverse needs, the software can calculate the remaining unknown through any three known numbers, such as the known U value, area, and heat, to 
+calculate the temperature difference. The value of U, also known as Thermal Transmittance, represents the rate of heat flow in Watts (W) across a particular 
+thickness of a material or a group of materials and across a temperature difference of 1K. U-value is obtained by dividing Thermal Conductivity or k-value (λ) 
+by distance. Showed by Equation 1. 
+								U=λ/d    								Eqn.1
+Similar products on the market mainly for building heat calculator and analysis company, by manual analysis and calculation.
