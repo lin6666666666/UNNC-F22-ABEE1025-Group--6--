@@ -1,0 +1,19 @@
+def __init__(self):
+        self._shgc1 = 0.0
+        self._shgc2 = 0.0
+        self._u1 = 0.0
+        self._u2 = 0.0
+    
+    # getter方法
+    def get(self):
+        return (self._shgc1, self._shgc2), (self._u1, self._u2)
+    # setter方法
+    def set(self, shgc1, shgc2, u1, u2):
+        self._shgc1 = shgc1
+        self._shgc2 = shgc2
+        self._u1 = u1
+        self._u2 = u2
+
+    # 计算最优值方法
+    def get_val(self):
+        return self._shgc2, self._u2
